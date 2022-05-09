@@ -1,0 +1,43 @@
+{
+  "name": "babel-storybook-anima",
+  "version": "1.0.1",
+  "description": "A babel plugin for storybook anima",
+  "main": "lib/index.js",
+  "files": [
+    "lib/**/*",
+    "README.md"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "NODE_ENV=production npx babel --config-file ./babel.config.json --out-file ./lib/index.js ./src/index.ts",
+    "prepare": "npm run build && npm test",
+    "test": "jest",
+    "dev": "jest --watchAll",
+    "ci": "jest",
+    "syntax-check": "npx tsc -p ./tsconfig.json"
+  },
+  "keywords": [
+    "babel-plugin",
+    "storybook",
+    "anima"
+  ],
+  "dependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/generator": "^7.15.4",
+    "html-tags": "^3.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/plugin-transform-react-jsx": "^7.17.3",
+    "@babel/plugin-transform-typescript": "^7.15.4",
+    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.15.0",
+    "@types/jest": "^27.5.0",
+    "babel-jest": "^28.0.3",
+    "del-cli": "^4.0.1",
+    "jest": "^28.0.3",
+    "jest-file-snapshot": "^0.5.0",
+    "typescript": "^4.4.3"
+  }
+}
