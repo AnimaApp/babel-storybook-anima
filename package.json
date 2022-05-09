@@ -10,7 +10,6 @@
   "license": "MIT",
   "scripts": {
     "build": "NODE_ENV=production npx babel --config-file ./babel.config.json --out-file ./lib/index.js ./src/index.ts",
-    "prepare": "npm run build && npm test",
     "test": "jest",
     "dev": "jest --watchAll",
     "ci": "jest -u",
