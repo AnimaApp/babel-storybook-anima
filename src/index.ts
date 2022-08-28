@@ -2,6 +2,7 @@ import * as t from "@babel/types";
 import { PluginObj } from "@babel/core";
 const htmlTags = require("html-tags");
 const selfClosingTags = require("html-tags/void");
+import nodePath from "path";
 
 const html5NativeTags = [...htmlTags, ...selfClosingTags] as string[];
 
@@ -24,11 +25,51 @@ export default () => {
     };
     cwd: string;
     filename: string;
+    importMap: { [key: string]: { [key: string]: string[] } };
   }
 
   const visitor: PluginObj<PluginInfo> = {
     name: "babel-storybook-anima",
     visitor: {
+      ImportDeclaration: (path, state) => {
+        const filePath = state.filename;
+        const basename = nodePath.basename(filePath);
+        const ext = nodePath.extname(basename).split(".")[1];
+        console.log(ext);
+        if (!["jsx", "tsx", "js", "ts"].includes(ext)) return;
+
+        const importDeclaration = path.node;
+        if (!t.isStringLiteral(importDeclaration.source)) {
+          return;
+        }
+        const source = importDeclaration.source.value;
+        if (!source) return;
+
+        const importedFilePath = nodePath.join(filePath, "..", source);
+
+        const importNames = [];
+
+        for (const specifier of importDeclaration.specifiers) {
+          if (t.isImportSpecifier(specifier)) {
+            importNames.push(specifier.local.name);
+          } else if (t.isImportDefaultSpecifier(specifier)) {
+            importNames.push(specifier.local.name);
+          }
+        }
+
+        if (!state.importMap) {
+          state.importMap = {};
+        }
+
+        if (!state.importMap[filePath]) {
+          state.importMap[filePath] = {};
+        }
+
+        if (!state.importMap[filePath][importedFilePath]) {
+          state.importMap[filePath][importedFilePath] = [];
+        }
+        state.importMap[filePath][importedFilePath].push(...importNames);
+      },
       JSXOpeningElement(path, state) {
         const nodeAttributes = path.node.attributes;
         let tagName = "";
@@ -44,9 +85,24 @@ export default () => {
         const asOrphan = isJSXComponent(tagName);
 
         if (asOrphan) {
-          nodeAttributes.push(
-            t.jSXAttribute(t.jSXIdentifier("data-as-orphan"))
-          );
+          const fileImports = (state?.importMap ?? {})[state?.filename] ?? {};
+
+          const importedFilePath = Object.keys(fileImports).find((filePath) => {
+            return fileImports[filePath].includes(tagName);
+          });
+
+          if (importedFilePath) {
+            nodeAttributes.push(
+              t.jSXAttribute(
+                t.jSXIdentifier("data-file"),
+                t.stringLiteral(importedFilePath)
+              )
+            );
+          }
+
+          // nodeAttributes.push(
+          //   t.jSXAttribute(t.jSXIdentifier("data-as-orphan"))
+          // );
         }
       },
     },

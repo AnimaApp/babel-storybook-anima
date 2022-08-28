@@ -1,8 +1,10 @@
+import Mi, { x } from './Button'
+
 function anything() {
   return (
     <React.Fragment>
       <div>
-        <Button>Hello World</Button>
+        <Mi>Hello World</Mi>
       </div>
     </React.Fragment>
 
