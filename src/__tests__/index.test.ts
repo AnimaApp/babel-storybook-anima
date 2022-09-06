@@ -7,7 +7,7 @@ import { DEBUG } from "../DEBUG";
 expect.extend({ toMatchFile });
 
 const config = {
-  plugins: [require.resolve("../index")],
+  plugins: [[require.resolve("../index")]],
   presets: [["@babel/preset-react"]],
   configFile: false,
 };

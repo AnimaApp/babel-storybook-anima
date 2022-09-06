@@ -1,7 +1,32 @@
-import Mi, { x } from './Button';
+import React from 'react';
+import Checkbox from '@mui/material/Checkbox';
+export default {
+  title: 'Example/MUI Checkbox',
+  component: Checkbox,
+  argTypes: {
+    checked: {
+      control: 'boolean'
+    },
+    disabled: {
+      control: 'boolean'
+    }
+  }
+};
 
-function anything() {
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Mi, {
-    "data-file": "/Users/moezbouaggad/babel-storybook-anima/src/__fixtures__/JSX/Button"
-  }, "Hello World")));
-}
+const Template = args => /*#__PURE__*/React.createElement("span", {
+  "is-anima": "true",
+  "data-name": "Checkbox",
+  "data-package": "@mui/material/Checkbox"
+}, /*#__PURE__*/React.createElement(Checkbox, args));
+
+export const Default = Template.bind({});
+Default.args = {
+  checked: true,
+  disabled: false
+};
+window["__ANIMA__FILE__./src/__fixtures__/JSX/code.jsx"] = {
+  "@mui/material/Checkbox": [{
+    "name": "Checkbox",
+    "isDefault": true
+  }]
+};

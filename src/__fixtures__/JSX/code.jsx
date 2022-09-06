@@ -1,12 +1,22 @@
-import Mi, { x } from './Button'
+import React from 'react';
+import Checkbox from '@mui/material/Checkbox';
 
-function anything() {
-  return (
-    <React.Fragment>
-      <div>
-        <Mi>Hello World</Mi>
-      </div>
-    </React.Fragment>
 
-  );
-}
+export default {
+  title: 'Example/MUI Checkbox',
+  component: Checkbox,
+  argTypes: {
+    checked: { control: 'boolean' },
+    disabled: { control: 'boolean' },
+  },
+};
+
+const Template = (args) => <Checkbox {...args} />;
+export const Default = Template.bind({});
+
+Default.args = {
+  checked: true,
+  disabled: false,
+};
+
+
