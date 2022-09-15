@@ -12,6 +12,12 @@ import { scan, matchBase } from "picomatch";
 const html5NativeTags = [...htmlTags, ...selfClosingTags] as string[];
 const ignoredImports = ["react", "react/jsx-runtime"];
 
+const relativePattern = /^\.{1,2}([/\\]|$)/;
+
+const isLocal = (str: string) => {
+  return relativePattern.test(str) && !str.includes("node_modules");
+};
+
 function charAtIsUpper(str: string, pos: number) {
   var chr = str.charAt(pos);
   return /[A-Z]|[\u0080-\u024F]/.test(chr) && chr === chr.toUpperCase();
@@ -23,7 +29,7 @@ function isJSXComponent(tagName: string) {
   return !html5NativeTags.includes(tagName);
 }
 
-type ImportName = { name: string; isDefault: boolean };
+type ImportName = { name: string; isDefault: boolean; key?: string };
 
 const isWrapper = (node: t.Node) => {
   return (
@@ -106,12 +112,11 @@ export default () => {
           }
         }
 
-        const nonNpm = (str: string) => {
-          return str.match(/^.\.\/|^.\/|^\//) && !str.includes("node_modules");
-        };
-
-        const importedFilePath = nonNpm(source)
-          ? nodePath.relative(state.opts.projectRoot ?? state.cwd, source)
+        const importedFilePath = isLocal(source)
+          ? nodePath.relative(
+              state.opts.projectRoot ?? state.cwd,
+              nodePath.resolve(state.filename, "..", source)
+            )
           : source;
 
         if (!state.importMap) {
@@ -121,7 +126,15 @@ export default () => {
         if (!state.importMap[importedFilePath]) {
           state.importMap[importedFilePath] = [];
         }
-        state.importMap[importedFilePath].push(...importNames);
+
+        state.importMap[importedFilePath].push(
+          ...importNames.map((e) => ({
+            ...e,
+            key: e.isDefault
+              ? importedFilePath
+              : nodePath.join(importedFilePath, e.name),
+          }))
+        );
       },
       JSXElement: {
         exit: (path, state) => {
@@ -164,9 +177,11 @@ export default () => {
                 importPath
               );
 
-              const { name, isDefault } = importName;
+              const { name, isDefault, key } = importName;
 
-              const pkg = isDefault
+              const pkg = key
+                ? t.stringLiteral(key)
+                : isDefault
                 ? t.stringLiteral(importPath)
                 : t.stringLiteral(nodePath.join(importPath, name));
 
@@ -198,6 +213,7 @@ export default () => {
           } = path;
 
           if (!state.filename) return;
+
           const ext = getExtension(state.filename);
           if (!["jsx", "tsx"].includes(ext)) return;
 
@@ -294,7 +310,6 @@ export default () => {
 };
 
 const normalizeStoryPath = (filename: string) => {
-  const relativePattern = /^\.{1,2}([/\\]|$)/;
   if (relativePattern.test(filename)) return filename;
   return `.${nodePath.sep}${filename}`;
 };
