@@ -7,7 +7,7 @@ import { DEBUG } from "../DEBUG";
 expect.extend({ toMatchFile });
 
 const config = {
-  plugins: [require.resolve("../index")],
+  plugins: [[require.resolve("../index")]],
   presets: [["@babel/preset-react"]],
   configFile: false,
 };
@@ -30,8 +30,10 @@ function transform(test: "JSX") {
 
 function transformFile(input: string, output: string) {
   try {
-    fs.unlinkSync(output);
-    fs.unlinkSync(path.resolve(output + ".history"));
+    try {
+      fs.unlinkSync(output);
+      fs.unlinkSync(path.resolve(output + ".history"));
+    } catch (error) {}
     const gen = babel.transformFileSync(input, config);
     return { code: gen?.code || "", output };
   } finally {
