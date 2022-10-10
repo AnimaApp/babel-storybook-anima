@@ -1,89 +1,91 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Button from '../Button';
-import Icon from '../Icon';
-import './Banner.scss';
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-const Banner = props => {
-  return /*#__PURE__*/React.createElement("div", {
-    style: { ...(props.tint ? {
-        '--tint-1': 'var(--' + props.tint + '-1)',
-        '--tint-2': 'var(--' + props.tint + '-2)',
-        '--tint-3': 'var(--' + props.tint + '-3)',
-        '--tint-4': 'var(--' + props.tint + '-4)',
-        '--tint-5': 'var(--' + props.tint + '-5)',
-        '--tint-6': 'var(--' + props.tint + '-6)',
-        '--tint-7': 'var(--' + props.tint + '-7)',
-        '--tint-8': 'var(--' + props.tint + '-8)',
-        '--tint-9': 'var(--' + props.tint + '-9)',
-        '--tint-10': 'var(--' + props.tint + '-10)',
-        '--tint-11': 'var(--' + props.tint + '-11)',
-        '--tint-12': 'var(--' + props.tint + '-12)'
-      } : {}),
-      ...(props.style || {})
+import React from "react";
+import Button from "@mui/material/Button";
+import { Delete, Send } from "@mui/icons-material";
+export { default as Moez } from '../JSX';
+export default {
+  component: Button,
+  argTypes: {
+    title: {
+      type: "string",
+      defaultValue: "Button"
     },
-    className: `anima-ds-banner ${props.closable ? 'closable' : ''}`
-  }, /*#__PURE__*/React.createElement("header", null, /*#__PURE__*/React.createElement("span", {
-    "is-anima": "true",
-    "data-name": "Icon",
-    "data-package": "src/__fixtures__/Icon"
-  }, /*#__PURE__*/React.createElement(Icon, {
-    name: props.icon,
-    color: 'var(--tint-9)',
-    size: "md"
-  })), /*#__PURE__*/React.createElement("span", null, props.title), props.closable && /*#__PURE__*/React.createElement("span", {
-    "is-anima": "true",
-    "data-name": "Button",
-    "data-package": "src/__fixtures__/Button"
-  }, /*#__PURE__*/React.createElement(Button, {
-    icon: "close",
-    tint: props.tint,
-    variant: "tertiary",
-    border: false,
-    size: "sm",
-    onClick: props.onClose
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "anima-ds-banner_content"
-  }, props.message), props.hasActions ? /*#__PURE__*/React.createElement("footer", null, props.actions.map((item, index) => {
-    return /*#__PURE__*/React.createElement("span", {
-      "is-anima": "true",
-      "data-name": "Button",
-      "data-package": "src/__fixtures__/Button"
-    }, /*#__PURE__*/React.createElement(Button, {
-      onClick: item.action,
-      variant: "tertiary",
-      tint: props.tint,
-      label: item.label,
-      fullWidth: true,
-      key: index
-    }));
-  })) : '');
+    variant: {
+      control: {
+        type: "select"
+      },
+      options: ["contained", "outlined", "text"],
+      defaultValue: "contained"
+    },
+    size: {
+      control: {
+        type: "select"
+      },
+      options: ["small", "medium", "large"],
+      defaultValue: "medium"
+    }
+  }
+};
+export const Story = args => {
+  const {
+    title,
+    ...other
+  } = args;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ReactComment, {
+    "data-anima": "{\"componentData\":{\"pkg\":\"@mui/material/Button\",\"tagName\":\"Button\"}}"
+  }), /*#__PURE__*/React.createElement(Button, _extends({}, other, {
+    "is-anima": "true"
+  }), title));
+};
+Story.args = {
+  title: "Button",
+  color: "primary",
+  size: "large",
+  variant: "contained"
 };
 
-Banner.propTypes = {
-  actions: PropTypes.array,
-  closable: PropTypes.bool,
-  hasActions: PropTypes.bool,
-  icon: PropTypes.string,
-  message: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-  onClose: PropTypes.func,
-  style: PropTypes.object,
-  tint: PropTypes.string,
-  title: PropTypes.string
-};
-Banner.defaultProps = {};
-export default Banner;
-window["__ANIMA__FILE__./src/__fixtures__/JSX/code.jsx"] = {
-  "prop-types": [{
-    "name": "PropTypes",
-    "isDefault": true
-  }],
-  "src/__fixtures__/Button": [{
-    "name": "Button",
-    "isDefault": true
-  }],
-  "src/__fixtures__/Icon": [{
-    "name": "Icon",
-    "isDefault": true
-  }]
-};
+if (!window.ReactComment) {
+  window.ReactComment = props => {
+    try {
+      const React = require('react');
+
+      const animaData = props['data-anima'];
+      if (!animaData) return null;
+      const ref = React.createRef();
+      React.useLayoutEffect(() => {
+        let el = null;
+        let parent = null;
+        let comm = null;
+
+        if (ref.current) {
+          el = ref.current;
+          parent = el.parentNode;
+          comm = window.document.createComment(animaData);
+
+          try {
+            if (parent && parent.contains(el)) {
+              parent.replaceChild(comm, el);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }
+
+        return () => {
+          if (parent && el && comm) {
+            parent.replaceChild(el, comm);
+          }
+        };
+      }, []);
+      return React.createElement('span', {
+        ref,
+        style: {
+          display: 'none'
+        }
+      }, []);
+    } catch (e) {
+      return null;
+    }
+  };
+}
