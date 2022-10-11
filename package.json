@@ -1,6 +1,6 @@
 {
   "name": "babel-storybook-anima",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A babel plugin for storybook anima",
   "main": "lib/index.js",
   "files": [
