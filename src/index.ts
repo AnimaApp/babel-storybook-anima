@@ -411,13 +411,17 @@ export default () => {
           }, {});
 
           const storiesPattern = state.opts.storybookConfig?.stories ?? [];
-          const storiesGlob = storiesPattern.map((s) => scan(s).glob);
+          const storiesGlob = storiesPattern
+            .filter(Boolean)
+            .map((s) => scan(s).glob)
+            .filter(Boolean);
 
           const file = normalizeStoryPath(
             nodePath.relative(state.opts.projectRoot ?? state.cwd, filePath)
           );
 
-          const isStoryFile = storiesGlob.some((g) => matchBase(file, g));
+          const isStoryFile =
+            file && storiesGlob.some((g) => matchBase(file, g));
 
           const exportDefaultNode = body.find((node) =>
             t.isExportDefaultDeclaration(node)
